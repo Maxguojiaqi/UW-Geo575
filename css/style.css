@@ -1,0 +1,34 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+#viewDiv {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+  height: 100%;
+}
+
+#num-homicides {
+  color: #ed5050;
+  font-size: 36pt;
+  font-weight: bolder;
+  line-height: 0.8;
+}
+#avg-age {
+  color: #149dcf;
+  font-size: 20pt;
+  font-weight: bolder;
+}
+#avg-open-time {
+  color: #149dcf;
+  font-size: 20pt;
+  font-weight: bolder;
+}
