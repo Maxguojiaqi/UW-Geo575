@@ -1,0 +1,190 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+
+    <title>UW Madison Final Project</title>
+
+    <!-- Load the Chart.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.21/esri/themes/light/main.css" />
+
+    <style>
+      html,
+      body {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      #viewDiv {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        top: 0;
+        bottom: 0;
+        height: 100%;
+      }
+
+      #num-homicides {
+        color: #ed5050;
+        font-size: 36pt;
+        font-weight: bolder;
+        line-height: 0.8;
+      }
+      #avg-age {
+        color: #149dcf;
+        font-size: 20pt;
+        font-weight: bolder;
+      }
+      #avg-open-time {
+        color: #149dcf;
+        font-size: 20pt;
+        font-weight: bolder;
+      }
+    </style>
+
+    <script src="https://js.arcgis.com/4.21/"></script>
+
+    <script>
+      require([
+        "esri/views/MapView",
+        "esri/WebMap",
+        "esri/widgets/Legend",
+        "esri/widgets/Expand",
+        "esri/widgets/Bookmarks",
+        "esri/core/lang",
+        "esri/core/promiseUtils",
+        "esri/core/watchUtils",
+        "esri/widgets/LayerList",
+        "esri/widgets/Search",
+        "esri/widgets/BasemapToggle",
+        "esri/widgets/ScaleBar"
+      ], function(MapView, 
+              WebMap, 
+              Legend, 
+              Expand, 
+              Bookmarks, 
+              lang, 
+              promiseUtils, 
+              watchUtils,
+              LayerList, 
+              Search,
+              BasemapToggle,
+              ScaleBar) 
+      {
+
+        // load a web map containing homicide statistics
+        // from a portal item
+
+        const webmap = new WebMap({
+          portalItem: {
+            id: "74d8654260674f588ec926d783aa5822"
+          }
+        });
+
+        const view = new MapView({
+          map: webmap,
+          container: "viewDiv",
+          constraints: {
+            minScale: 300000
+          },
+          highlightOptions: {
+            color: "black",
+            haloOpacity: 0.65,
+            fillOpacity: 0.45
+          }
+        });
+
+        // Add UI elements to the view
+        const legendExpand = new Expand({
+          view: view,
+          content: new Legend({
+            view: view
+          }),
+          expanded: view.widthBreakpoint !== "xsmall"
+        });
+        view.ui.add(legendExpand, "bottom-left");
+
+        view.watch("widthBreakpoint", function(newValue) {
+          titleExpand.expanded = newValue !== "xsmall";
+          legendExpand.expanded = newValue !== "xsmall";
+        });
+
+        const searchWidget = new Search({
+          view: view
+        });
+        // Displays instructions to the user for understanding the sample
+        // And places them in an Expand widget instance
+
+        const sampleInstructions = document.createElement("div");
+        sampleInstructions.style.padding = "10px";
+        sampleInstructions.style.backgroundColor = "white";
+        sampleInstructions.style.width = "300px";
+        sampleInstructions.innerHTML = [
+          "<b>Drag</b> the pointer over the data to view stats",
+          "within one mile of the pointer location."
+        ].join(" ");
+
+        const instructionsExpand = new Expand({
+          expandIconClass: "esri-icon-question",
+          expandTooltip: "How to use this sample",
+          view: view,
+          content: sampleInstructions,
+          expanded : false
+        });
+        view.ui.add(instructionsExpand, "top-left");
+        // Add the search widget to the top right corner of the view
+        view.ui.add(searchWidget, {
+          position: "top-right"
+        });
+
+        // Add UI elements to the view
+        const layerList = new Expand({
+          view: view,
+          content: new LayerList({
+          view: view
+        }),
+          expanded: view.widthBreakpoint !== "xsmall"
+        });
+        // Adds widget below other elements in the top left corner of the view
+        view.ui.add(layerList, {
+          position: "bottom-right",
+          style: "ruler",
+          unit: "metric"
+        });
+
+        let basemapGallery = new Expand({
+          view: view,
+          content: new BasemapToggle({
+          view: view,  // The view that provides access to the map's "streets-vector" basemap
+          nextBasemap: "streets-vector"  // Allows for toggling to the "hybrid" basemap
+        }),
+          expanded: view.widthBreakpoint !== "xsmall"
+        });
+        // Add widget to the top right corner of the view
+        view.ui.add(basemapGallery, {
+          position: "top-left"
+        });
+
+        let scaleBar = new ScaleBar({
+          view: view
+        });
+        // Add widget to the bottom left corner of the view
+        view.ui.add(scaleBar, {
+          position: "bottom-right"
+        });
+        
+        view.when().then(function() {
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>
