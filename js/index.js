@@ -74,13 +74,12 @@ require([
     sampleInstructions.style.backgroundColor = "white";
     sampleInstructions.style.width = "300px";
     sampleInstructions.innerHTML = [
-      "<b>Drag</b> the pointer over the data to view stats",
-      "within one mile of the pointer location."
+      "This web map is created to help display the delivery volume for south of GTA Area in the winter season"
     ].join(" ");
 
     const instructionsExpand = new Expand({
       expandIconClass: "esri-icon-question",
-      expandTooltip: "How to use this sample",
+      expandTooltip: "Map Info",
       view: view,
       content: sampleInstructions,
       expanded : false
